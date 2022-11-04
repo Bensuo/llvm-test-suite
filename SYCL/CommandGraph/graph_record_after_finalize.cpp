@@ -50,9 +50,9 @@ int main() {
 
     // Vector add to some buffer
     testQueue.submit([&](handler &cgh) {
-      auto ptrA = bufferA.template get_access<access::mode::read>(cgh);
-      auto ptrB = bufferB.template get_access<access::mode::read>(cgh);
-      auto ptrC = bufferC.template get_access<access::mode::read_write>(cgh);
+      auto ptrA = bufferA.get_access<access::mode::read>(cgh);
+      auto ptrB = bufferB.get_access<access::mode::read>(cgh);
+      auto ptrC = bufferC.get_access<access::mode::read_write>(cgh);
       cgh.parallel_for<vector_plus_equals>(
           range<1>(size), [=](item<1> id) { ptrC[id] += ptrA[id] + ptrB[id]; });
     });
@@ -61,9 +61,8 @@ int main() {
 
     // Read and modify previous output and write to output buffer
     testQueue.submit([&](handler &cgh) {
-      auto ptrC = bufferC.template get_access<access::mode::read>(cgh);
-      auto ptrOut =
-          bufferOut.template get_access<access::mode::read_write>(cgh);
+      auto ptrC = bufferC.get_access<access::mode::read>(cgh);
+      auto ptrOut = bufferOut.get_access<access::mode::read_write>(cgh);
       cgh.parallel_for<write_to_output>(
           range<1>(size), [=](item<1> id) { ptrOut[id] += ptrC[id] + 1; });
     });
@@ -85,8 +84,8 @@ int main() {
   }
 
   bool failed = false;
-  failed = referenceC != dataC;
-  failed = referenceOut != dataOut;
+  failed |= referenceC != dataC;
+  failed |= referenceOut != dataOut;
 
   return failed;
 }

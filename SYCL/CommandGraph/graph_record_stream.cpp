@@ -31,7 +31,7 @@ int main() {
 
     // Vector add to temporary output buffer
     testQueue.submit([&](handler &cgh) {
-      auto accIn = bufferIn.template get_access<access::mode::read>(cgh);
+      auto accIn = bufferIn.get_access<access::mode::read>(cgh);
       sycl::stream out(16 * 16, 16, cgh);
       cgh.parallel_for<stream_kernel>(range<1>(size), [=](item<1> id) {
         out << "Val: " << accIn[id.get_linear_id()] << sycl::endl;

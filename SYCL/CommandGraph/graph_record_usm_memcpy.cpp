@@ -96,9 +96,9 @@ int main() {
   }
 
   bool failed = false;
-  failed = referenceA != dataA;
-  failed = referenceB != dataB;
-  failed = referenceC != dataC;
+  failed |= referenceA != dataA;
+  failed |= referenceB != dataB;
+  failed |= referenceC != dataC;
 
   return failed;
 }

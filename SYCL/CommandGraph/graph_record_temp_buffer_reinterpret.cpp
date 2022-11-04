@@ -41,9 +41,9 @@ int main() {
 
     // Create some temporary buffers only for recording
     {
-      auto bufferA2 = bufferA.template reinterpret<T, 1>(bufferA.get_range());
-      auto bufferB2 = bufferB.template reinterpret<T, 1>(bufferB.get_range());
-      auto bufferC2 = bufferC.template reinterpret<T, 1>(bufferC.get_range());
+      auto bufferA2 = bufferA.reinterpret<T, 1>(bufferA.get_range());
+      auto bufferB2 = bufferB.reinterpret<T, 1>(bufferB.get_range());
+      auto bufferC2 = bufferC.reinterpret<T, 1>(bufferC.get_range());
 
       // Record commands to graph
       run_kernels(testQueue, size, bufferA2, bufferB2, bufferC2);
@@ -61,9 +61,9 @@ int main() {
   }
 
   bool failed = false;
-  failed = referenceA != dataA;
-  failed = referenceB != dataB;
-  failed = referenceC != dataC;
+  failed |= referenceA != dataA;
+  failed |= referenceB != dataB;
+  failed |= referenceC != dataC;
 
   return failed;
 }

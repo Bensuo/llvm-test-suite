@@ -52,11 +52,11 @@ int main() {
     testQueue.submit([&](handler &cgh) {
       // This should be access::target::host_task but it has not been
       // implemented yet.
-      auto ptrIn =
-          bufferC.template get_access<access::mode::read_write,
+      auto ptrIn = bufferC.get_access<access::mode::read_write,
                                       access::target::host_buffer>(cgh);
-      auto ptrOut = hostTaskOutputBuffer.template get_access<
-          access::mode::read_write, access::target::host_buffer>(cgh);
+      auto ptrOut =
+          hostTaskOutputBuffer.get_access<access::mode::read_write,
+                                          access::target::host_buffer>(cgh);
       cgh.host_task([=]() {
         for (size_t i = 0; i < size; i++) {
           ptrOut[i] = ptrIn[i];
@@ -85,11 +85,11 @@ int main() {
     testQueue.submit([&](handler &cgh) {
       // This should be access::target::host_task but it has not been
       // implemented yet.
-      auto ptrIn =
-          bufferC2.template get_access<access::mode::read_write,
+      auto ptrIn = bufferC2.get_access<access::mode::read_write,
                                        access::target::host_buffer>(cgh);
-      auto ptrOut = hostTaskOutputBuffer.template get_access<
-          access::mode::read_write, access::target::host_buffer>(cgh);
+      auto ptrOut =
+          hostTaskOutputBuffer.get_access<access::mode::read_write,
+                                          access::target::host_buffer>(cgh);
       cgh.host_task([=]() {
         for (size_t i = 0; i < size; i++) {
           ptrOut[i] = ptrIn[i];
@@ -115,14 +115,14 @@ int main() {
   }
 
   bool failed = false;
-  failed = referenceA != dataA;
-  failed = referenceB != dataB;
-  failed = referenceC != dataC;
-  failed = referenceC != hostTaskOutput;
+  failed |= referenceA != dataA;
+  failed |= referenceB != dataB;
+  failed |= referenceC != dataC;
+  failed |= referenceC != hostTaskOutput;
 
-  failed = referenceA != dataA2;
-  failed = referenceB != dataB2;
-  failed = referenceC != dataC2;
+  failed |= referenceA != dataA2;
+  failed |= referenceB != dataB2;
+  failed |= referenceC != dataC2;
 
   return failed;
 }

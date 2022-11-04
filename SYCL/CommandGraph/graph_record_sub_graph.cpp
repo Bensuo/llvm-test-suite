@@ -60,16 +60,16 @@ int main() {
 
     // Vector add two values
     testQueue.submit([&](handler &cgh) {
-      auto ptrA = bufferA.template get_access<access::mode::read>(cgh);
-      auto ptrB = bufferB.template get_access<access::mode::read>(cgh);
-      auto ptrC = bufferC.template get_access<access::mode::write>(cgh);
+      auto ptrA = bufferA.get_access<access::mode::read>(cgh);
+      auto ptrB = bufferB.get_access<access::mode::read>(cgh);
+      auto ptrC = bufferC.get_access<access::mode::write>(cgh);
       cgh.parallel_for<sub_vec_add_kernel>(
           range<1>(size), [=](item<1> id) { ptrC[id] = ptrA[id] + ptrB[id]; });
     });
 
     // Modify the output value with some other value
     testQueue.submit([&](handler &cgh) {
-      auto ptrC = bufferC.template get_access<access::mode::read_write>(cgh);
+      auto ptrC = bufferC.get_access<access::mode::read_write>(cgh);
       cgh.parallel_for<sub_subtract_kernel>(
           range<1>(size), [=](item<1> id) { ptrC[id] -= mod_value; });
     });
@@ -84,8 +84,8 @@ int main() {
 
     // Modify the input values.
     testQueue.submit([&](handler &cgh) {
-      auto ptrA = bufferA.template get_access<access::mode::read_write>(cgh);
-      auto ptrB = bufferB.template get_access<access::mode::read_write>(cgh);
+      auto ptrA = bufferA.get_access<access::mode::read_write>(cgh);
+      auto ptrB = bufferB.get_access<access::mode::read_write>(cgh);
       cgh.parallel_for<mod_input_kernel>(range<1>(size), [=](item<1> id) {
         ptrA[id] += mod_value;
         ptrB[id] += mod_value;
@@ -96,8 +96,8 @@ int main() {
 
     // Copy to another output buffer.
     testQueue.submit([&](handler &cgh) {
-      auto ptrC = bufferC.template get_access<access::mode::read>(cgh);
-      auto ptrOut = bufferOut.template get_access<access::mode::write>(cgh);
+      auto ptrC = bufferC.get_access<access::mode::read>(cgh);
+      auto ptrOut = bufferOut.get_access<access::mode::write>(cgh);
       cgh.parallel_for<copy_out_kernel>(range<1>(size), [=](item<1> id) {
         ptrOut[id] = ptrC[id] + mod_value;
       });
@@ -117,10 +117,10 @@ int main() {
   }
 
   bool failed = false;
-  failed = referenceA != dataA;
-  failed = referenceB != dataB;
-  failed = referenceC != dataC;
-  failed = referenceOut != dataOut;
+  failed |= referenceA != dataA;
+  failed |= referenceB != dataB;
+  failed |= referenceC != dataC;
+  failed |= referenceOut != dataOut;
 
   return failed;
 }

@@ -45,9 +45,9 @@ int main() {
 
     // Vector add to output
     testQueue.submit([&](handler &cgh) {
-      auto ptrA = bufferA.template get_access<access::mode::read>(cgh);
-      auto ptrB = bufferB.template get_access<access::mode::read>(cgh);
-      auto ptrOut = bufferC.template get_access<access::mode::read_write>(cgh);
+      auto ptrA = bufferA.get_access<access::mode::read>(cgh);
+      auto ptrB = bufferB.get_access<access::mode::read>(cgh);
+      auto ptrOut = bufferC.get_access<access::mode::read_write>(cgh);
       cgh.parallel_for<host_task_add>(range<1>(size), [=](item<1> id) {
         ptrOut[id] += ptrA[id] + ptrB[id];
       });
@@ -57,8 +57,7 @@ int main() {
     testQueue.submit([&](handler &cgh) {
       // This should be access::target::host_task but it has not been
       // implemented yet.
-      auto hostC =
-          bufferC.template get_access<access::mode::read_write,
+      auto hostC = bufferC.get_access<access::mode::read_write,
                                       access::target::host_buffer>(cgh);
       cgh.host_task([=]() {
         for (size_t i = 0; i < size; i++) {
@@ -69,7 +68,7 @@ int main() {
 
     // Modify temp buffer and write to output buffer
     testQueue.submit([&](handler &cgh) {
-      auto ptrOut = bufferC.template get_access<access::mode::read_write>(cgh);
+      auto ptrOut = bufferC.get_access<access::mode::read_write>(cgh);
       cgh.parallel_for<host_task_inc>(range<1>(size),
                                       [=](item<1> id) { ptrOut[id] += 1; });
     });
@@ -86,7 +85,7 @@ int main() {
   }
 
   bool failed = false;
-  failed = referenceC != dataC;
+  failed |= referenceC != dataC;
 
   return failed;
 }

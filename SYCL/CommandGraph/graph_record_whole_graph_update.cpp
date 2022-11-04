@@ -78,13 +78,13 @@ int main() {
   }
 
   bool failed = false;
-  failed = referenceA != dataA;
-  failed = referenceB != dataB;
-  failed = referenceC != dataC;
+  failed |= referenceA != dataA;
+  failed |= referenceB != dataB;
+  failed |= referenceC != dataC;
 
-  failed = referenceA != dataA2;
-  failed = referenceB != dataB2;
-  failed = referenceC != dataC2;
+  failed |= referenceA != dataA2;
+  failed |= referenceB != dataB2;
+  failed |= referenceC != dataC2;
 
   return failed;
 }
