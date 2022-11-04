@@ -13,7 +13,7 @@ using namespace sycl;
 int main() {
   queue testQueue;
 
-  ext::codeplay::command_graph<
+  ext::oneapi::experimental::command_graph<
       ext::oneapi::experimental::graph_state::modifiable>
       graph;
   auto graphExec = graph.finalize(testQueue.get_context());

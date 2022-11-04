@@ -21,7 +21,7 @@ int main() {
   queue testQueue2;
   try {
     testQueue2.begin_recording(graph);
-  } catch (cl::sycl::exception &e) {
+  } catch (sycl::exception &e) {
     auto stdErrc = e.code().value();
     if (stdErrc == static_cast<int>(errc::invalid)) {
       success = true;

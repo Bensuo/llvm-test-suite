@@ -25,5 +25,5 @@ int main() {
   }
 
   testQueue.end_recording();
-  return success;
+  return 0;
 }

@@ -14,10 +14,13 @@ int main() {
   queue testQueue;
 
   bool failure = false;
-  ext::codeplay::queue_state state = testQueue.get_info<info::queue::state>();
+  ext::oneapi::experimental::queue_state state =
+      testQueue.get_info<info::queue::state>();
   failure |= (state == ext::oneapi::experimental::queue_state::executing);
 
-  ext::codeplay::command_graph<ext::codeplay::graph_state::recordable> graph;
+  ext::oneapi::experimental::command_graph<
+      ext::oneapi::experimental::graph_state::modifiable>
+      graph;
   testQueue.begin_recording(graph);
   state = testQueue.get_info<info::queue::state>();
   failure |= (state == ext::oneapi::experimental::queue_state::recording);
