@@ -5,6 +5,9 @@
 /** This test checks that we can use a stream within a command_graph recording
  */
 
+// TODO: Output should be validated using lit mechanisms but this can be done
+// at a later point.
+
 #include "graph_common.hpp"
 
 using namespace sycl;
