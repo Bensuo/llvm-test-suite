@@ -44,7 +44,9 @@ int main() {
     testQueue.end_recording();
 
     auto graphExec = graph.finalize(testQueue.get_context());
-    auto submitGraph = [&]() { testQueue.submit(graphExec); };
+    auto submitGraph = [&]() {
+      testQueue.submit([&](handler &cgh) { cgh.exec_graph(graphExec); });
+    };
 
     std::vector<std::thread> threads;
     threads.reserve(iterations);
