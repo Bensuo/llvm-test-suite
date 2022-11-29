@@ -60,10 +60,10 @@ int main() {
     testQueue.end_recording();
 
     for (size_t i = 0; i < iterations; i++) {
-      testQueue.submit(execGraph);
+      testQueue.submit([&](handler &cgh) { cgh.exec_graph(graphExec); });
       // Update to second set of buffers
       execGraph.update(graphUpdate);
-      testQueue.submit(execGraph);
+      testQueue.submit([&](handler &cgh) { cgh.exec_graph(graphExec); });
       // Reset back to original buffers
       execGraph.update(graph);
     }

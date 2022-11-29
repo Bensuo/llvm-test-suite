@@ -2,9 +2,7 @@
 // RUN: %clangxx -fsycl -fsycl-targets=%sycl_triple %s -o %t.out
 // RUN: %GPU_RUN_PLACEHOLDER %t.out
 
-/** This test attempts creating multiple executable graphs from one modifiable
- * graph.
- */
+/** Tests queue shortcuts for executing a graph */
 
 #include "graph_common.hpp"
 
@@ -35,25 +33,26 @@ int main() {
     buffer<T> bufferB{dataB.data(), range<1>{dataB.size()}};
     buffer<T> bufferC{dataC.data(), range<1>{dataC.size()}};
 
-    // Run the kernels once first outside of the graph.
-    run_kernels(testQueue, size, bufferA, bufferB, bufferC);
-    testQueue.wait_and_throw();
-
     testQueue.begin_recording(graph);
 
     // Record commands to graph
+
     run_kernels(testQueue, size, bufferA, bufferB, bufferC);
 
     testQueue.end_recording();
+    auto graphExec = graph.finalize(testQueue.get_context());
 
-    // Execute several iterations of the graph (first iteration has already run
-    // before graph recording)
-    for (unsigned n = 1; n < iterations; n++) {
-      auto graphExec = graph.finalize(testQueue.get_context());
-      testQueue.submit([&](handler &cgh) { cgh.exec_graph(graphExec); });
+    // Execute several iterations of the graph using the different shortcuts
+    event e = testQueue.exec_graph(graphExec);
+
+    assert(iterations > 2);
+    const unsigned loop_iterations = iterations - 2;
+    std::vector<event> events(loop_iterations);
+    for (unsigned n = 0; n < loop_iterations; n++) {
+      events[n] = testQueue.exec_graph(graphExec, e);
     }
-    // Perform a wait on all graph submissions.
-    testQueue.wait();
+
+    testQueue.exec_graph(graphExec, events).wait();
   }
 
   bool failed = false;

@@ -44,7 +44,7 @@ int main() {
 
     auto graphExec = graph.finalize(testQueue.get_context());
 
-    testQueue.submit(graphExec);
+    testQueue.submit([&](handler &cgh) { cgh.exec_graph(graphExec); });
 
     // Perform a wait on all graph submissions.
     testQueue.wait();
