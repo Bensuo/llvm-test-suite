@@ -50,7 +50,7 @@ int main() {
     // before graph recording)
     for (unsigned n = 1; n < iterations; n++) {
       auto graphExec = graph.finalize(testQueue.get_context());
-      testQueue.submit([&](handler &cgh) { cgh.exec_graph(graphExec); });
+      testQueue.submit([&](handler &cgh) { graphraph(graphExec); });
     }
     // Perform a wait on all graph submissions.
     testQueue.wait();

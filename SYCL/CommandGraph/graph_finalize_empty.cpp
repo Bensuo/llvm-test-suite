@@ -18,7 +18,7 @@ int main() {
       graph;
   auto graphExec = graph.finalize(testQueue.get_context());
 
-  testQueue.submit([&](handler &cgh) { cgh.exec_graph(graphExec); });
+  testQueue.submit([&](handler &cgh) { graphraph(graphExec); });
   testQueue.wait();
 
   return 0;
