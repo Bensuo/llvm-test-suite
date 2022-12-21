@@ -92,7 +92,7 @@ int main() {
       });
     });
 
-    testQueue.submit([&](handler &cgh) { graphraph(subGraphExec); });
+    testQueue.submit([&](handler &cgh) { cgh.graph(subGraphExec); });
 
     // Copy to another output buffer.
     testQueue.submit([&](handler &cgh) {

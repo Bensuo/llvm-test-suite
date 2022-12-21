@@ -63,7 +63,7 @@ int main() {
     testQueue.end_recording();
     // Execute several iterations of the graph for 1st set of buffers
     for (unsigned n = 0; n < iterations; n++) {
-      testQueue.submit([&](handler &cgh) { graphraph(graphExec); });
+      testQueue.submit([&](handler &cgh) { cgh.graph(graphExec); });
     }
 
     graphExec.update(graphB);

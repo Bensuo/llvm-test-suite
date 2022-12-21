@@ -73,7 +73,7 @@ int main() {
 
     // Execute several iterations of the graph
     for (unsigned n = 0; n < iterations; n++) {
-      testQueue.submit([&](handler &cgh) { graphraph(graphExec); });
+      testQueue.submit([&](handler &cgh) { cgh.graph(graphExec); });
     }
     // Execute the extended graph.
     for (unsigned n = 0; n < iterations; n++) {

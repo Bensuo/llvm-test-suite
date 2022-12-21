@@ -81,7 +81,7 @@ int main() {
 
     // Execute graph over n iterations
     for (unsigned n = 0; n < iterations; n++) {
-      testQueue.submit([&](handler &cgh) { graphraph(graphExec); });
+      testQueue.submit([&](handler &cgh) { cgh.graph(graphExec); });
     }
     // Perform a wait on all graph submissions.
     testQueue.wait();

@@ -60,7 +60,7 @@ int main() {
     testQueue.end_recording();
 
     for (size_t i = 0; i < iterations; i++) {
-      testQueue.submit([&](handler &cgh) { graphraph(graphExec); });
+      testQueue.submit([&](handler &cgh) { cgh.graph(graphExec); });
       // Update to second set of buffers
       execGraph.update(graphUpdate);
       testQueue.submit([&](handler &cgh) { cgh.graph(graphExec); });

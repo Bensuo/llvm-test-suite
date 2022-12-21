@@ -21,7 +21,7 @@ int main() {
 
   try {
     auto graphExec = graph.finalize(testQueue.get_context());
-    testQueue.submit([&](handler &cgh) { graphraph(graphExec); });
+    testQueue.submit([&](handler &cgh) { cgh.graph(graphExec); });
   } catch (sycl::exception &e) {
     std::cout << "Exception thrown on finalize or submission.\n";
     std::abort();

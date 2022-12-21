@@ -44,7 +44,7 @@ int main() {
     testQueue.end_recording();
     auto finalizeGraph = [&]() {
       auto graphExec = graph.finalize(testQueue.get_context());
-      testQueue.submit([&](sycl::handler &cgh) { graphraph(graphExec); });
+      testQueue.submit([&](sycl::handler &cgh) { cgh.graph(graphExec); });
     };
 
     std::vector<std::thread> threads;
