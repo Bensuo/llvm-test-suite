@@ -43,16 +43,16 @@ int main() {
     auto graphExec = graph.finalize(testQueue.get_context());
 
     // Execute several iterations of the graph using the different shortcuts
-    event e = testQueue.exec_graph(graphExec);
+    event e = testQueue.ext_oneapi_graph(graphExec);
 
     assert(iterations > 2);
     const unsigned loop_iterations = iterations - 2;
     std::vector<event> events(loop_iterations);
     for (unsigned n = 0; n < loop_iterations; n++) {
-      events[n] = testQueue.exec_graph(graphExec, e);
+      events[n] = testQueue.ext_oneapi_graph(graphExec, e);
     }
 
-    testQueue.exec_graph(graphExec, events).wait();
+    testQueue.ext_oneapi_graph(graphExec, events).wait();
   }
 
   bool failed = false;

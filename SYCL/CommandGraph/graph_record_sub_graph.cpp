@@ -92,7 +92,7 @@ int main() {
       });
     });
 
-    testQueue.submit([&](handler &cgh) { cgh.graph(subGraphExec); });
+    testQueue.submit([&](handler &cgh) { cgh.ext_oneapi_graph(subGraphExec); });
 
     // Copy to another output buffer.
     testQueue.submit([&](handler &cgh) {
@@ -110,7 +110,7 @@ int main() {
 
     // Execute several iterations of the graph
     for (unsigned n = 0; n < iterations; n++) {
-      testQueue.submit([&](handler &cgh) { cgh.graph(mainGraphExec); });
+      testQueue.submit([&](handler &cgh) { cgh.ext_oneapi_graph(mainGraphExec); });
     }
     // Perform a wait on all graph submissions.
     testQueue.wait_and_throw();

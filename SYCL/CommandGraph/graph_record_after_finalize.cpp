@@ -73,11 +73,11 @@ int main() {
 
     // Execute several iterations of the graph
     for (unsigned n = 0; n < iterations; n++) {
-      testQueue.submit([&](handler &cgh) { cgh.graph(graphExec); });
+      testQueue.submit([&](handler &cgh) { cgh.ext_oneapi_graph(graphExec); });
     }
     // Execute the extended graph.
     for (unsigned n = 0; n < iterations; n++) {
-      testQueue.submit([&](handler &cgh) { cgh.graph(graphExecAdditional); });
+      testQueue.submit([&](handler &cgh) { cgh.ext_oneapi_graph(graphExecAdditional); });
     }
     // Perform a wait on all graph submissions.
     testQueue.wait_and_throw();

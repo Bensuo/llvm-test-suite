@@ -45,7 +45,7 @@ int main() {
 
     auto graphExec = graph.finalize(testQueue.get_context());
     auto submitGraph = [&]() {
-      testQueue.submit([&](handler &cgh) { cgh.graph(graphExec); });
+      testQueue.submit([&](handler &cgh) { cgh.ext_oneapi_graph(graphExec); });
     };
 
     std::vector<std::thread> threads;
