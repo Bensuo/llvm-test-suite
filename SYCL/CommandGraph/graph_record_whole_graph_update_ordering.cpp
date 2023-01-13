@@ -100,14 +100,14 @@ int main() {
     testQueue.end_recording();
     // Execute several iterations of the graph for 1st set of buffers
     for (unsigned n = 0; n < iterations; n++) {
-      testQueue.submit([&](handler &cgh) { cgh.exec_graph(graphExec); });
+      testQueue.submit([&](handler &cgh) { cgh.ext_oneapi_graph(graphExec); });
     }
 
     graphExec.update(graphB);
 
     // Execute several iterations of the graph for 2nd set of buffers
     for (unsigned n = 0; n < iterations; n++) {
-      testQueue.submit([&](handler &cgh) { cgh.exec_graph(graphExec); });
+      testQueue.submit([&](handler &cgh) { cgh.ext_oneapi_graph(graphExec); });
     }
 
     // Perform a wait on all graph submissions.
