@@ -56,7 +56,7 @@ int main() {
 
     // Record some operations to a graph which will later be submitted as part
     // of another graph.
-    testQueue.begin_recording(subGraph);
+    subGraph.begin_recording(testQueue);
 
     // Vector add two values
     testQueue.submit([&](handler &cgh) {
@@ -74,13 +74,13 @@ int main() {
           range<1>(size), [=](item<1> id) { ptrC[id] -= mod_value; });
     });
 
-    testQueue.end_recording();
+    subGraph.end_recording();
 
     auto subGraphExec = subGraph.finalize(testQueue.get_context());
 
     ext::oneapi::experimental::command_graph mainGraph;
 
-    testQueue.begin_recording(mainGraph);
+    mainGraph.begin_recording(testQueue);
 
     // Modify the input values.
     testQueue.submit([&](handler &cgh) {
@@ -103,14 +103,15 @@ int main() {
       });
     });
 
-    testQueue.end_recording();
+    mainGraph.end_recording();
 
     // Finalize a graph with the additional kernel for writing out to
     auto mainGraphExec = mainGraph.finalize(testQueue.get_context());
 
     // Execute several iterations of the graph
     for (unsigned n = 0; n < iterations; n++) {
-      testQueue.submit([&](handler &cgh) { cgh.ext_oneapi_graph(mainGraphExec); });
+      testQueue.submit(
+          [&](handler &cgh) { cgh.ext_oneapi_graph(mainGraphExec); });
     }
     // Perform a wait on all graph submissions.
     testQueue.wait_and_throw();

@@ -46,7 +46,7 @@ int main() {
     buffer<T> bufferC{dataC.data(), range<1>{dataC.size()}};
     buffer<T> bufferOut{dataOut.data(), range<1>{dataOut.size()}};
 
-    testQueue.begin_recording(graph);
+    graph.begin_recording(testQueue);
 
     // Vector add to some buffer
     testQueue.submit([&](handler &cgh) {
@@ -66,7 +66,7 @@ int main() {
       cgh.parallel_for<write_to_output>(
           range<1>(size), [=](item<1> id) { ptrOut[id] += ptrC[id] + 1; });
     });
-    testQueue.end_recording();
+    graph.end_recording();
 
     // Finalize a graph with the additional kernel for writing out to
     auto graphExecAdditional = graph.finalize(testQueue.get_context());
@@ -77,7 +77,8 @@ int main() {
     }
     // Execute the extended graph.
     for (unsigned n = 0; n < iterations; n++) {
-      testQueue.submit([&](handler &cgh) { cgh.ext_oneapi_graph(graphExecAdditional); });
+      testQueue.submit(
+          [&](handler &cgh) { cgh.ext_oneapi_graph(graphExecAdditional); });
     }
     // Perform a wait on all graph submissions.
     testQueue.wait_and_throw();

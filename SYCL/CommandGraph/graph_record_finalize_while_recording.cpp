@@ -14,7 +14,7 @@ int main() {
   queue testQueue;
 
   ext::oneapi::experimental::command_graph graph;
-  testQueue.begin_recording(graph);
+  graph.begin_recording(testQueue);
 
   try {
     graph.finalize(testQueue.get_context());
@@ -24,6 +24,6 @@ int main() {
     std::abort();
   }
 
-  testQueue.end_recording();
+  graph.end_recording();
   return 0;
 }

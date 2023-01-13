@@ -16,11 +16,11 @@ int main() {
   bool success = false;
 
   ext::oneapi::experimental::command_graph graphA;
-  testQueue.begin_recording(graphA);
+  graphA.begin_recording(testQueue);
 
   try {
     ext::oneapi::experimental::command_graph graphB;
-    testQueue.begin_recording(graphB);
+    graphB.begin_recording(testQueue);
   } catch (sycl::exception &e) {
     auto stdErrc = e.code().value();
     if (stdErrc == static_cast<int>(errc::invalid)) {
@@ -28,7 +28,7 @@ int main() {
     }
   }
 
-  testQueue.end_recording();
+  graphA.end_recording();
 
   return success;
 }

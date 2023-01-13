@@ -21,11 +21,11 @@ int main() {
   ext::oneapi::experimental::command_graph<
       ext::oneapi::experimental::graph_state::modifiable>
       graph;
-  testQueue.begin_recording(graph);
+  graph.begin_recording(testQueue);
   state = testQueue.get_info<info::queue::state>();
   failure |= (state == ext::oneapi::experimental::queue_state::recording);
 
-  testQueue.end_recording();
+  graph.end_recording();
   state = testQueue.get_info<info::queue::state>();
   failure |= (state == ext::oneapi::experimental::queue_state::executing);
 

@@ -34,12 +34,12 @@ int main() {
     buffer<T> bufferB{dataB.data(), range<1>{dataB.size()}};
     buffer<T> bufferC{dataC.data(), range<1>{dataC.size()}};
 
-    testQueue.begin_recording(graphA);
+    graphA.begin_recording(testQueue);
 
     // Record commands to graph
     run_kernels(testQueue, size, bufferA, bufferB, bufferC);
 
-    testQueue.end_recording();
+    graphA.end_recording();
 
     auto graphExec = graphA.finalize(testQueue.get_context());
 
@@ -49,12 +49,12 @@ int main() {
     buffer<T> bufferB2{dataB2.data(), range<1>{dataB2.size()}};
     buffer<T> bufferC2{dataC2.data(), range<1>{dataC2.size()}};
 
-    testQueue.begin_recording(graphB);
+    graphB.begin_recording(testQueue);
 
     // Record commands to graph
     run_kernels(testQueue, size, bufferA2, bufferB2, bufferC2);
 
-    testQueue.end_recording();
+    graphB.end_recording();
 
     auto updateGraph = [&]() { graphExec.update(graphB); };
 

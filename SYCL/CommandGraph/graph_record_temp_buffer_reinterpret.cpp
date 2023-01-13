@@ -37,7 +37,7 @@ int main() {
     buffer<T> bufferB{dataB.data(), range<1>{dataB.size()}};
     buffer<T> bufferC{dataC.data(), range<1>{dataC.size()}};
 
-    testQueue.begin_recording(graph);
+    graph.begin_recording(testQueue);
 
     // Create some temporary buffers only for recording
     {
@@ -48,7 +48,7 @@ int main() {
       // Record commands to graph
       run_kernels(testQueue, size, bufferA2, bufferB2, bufferC2);
 
-      testQueue.end_recording();
+      graph.end_recording();
     }
     auto graphExec = graph.finalize(testQueue.get_context());
 

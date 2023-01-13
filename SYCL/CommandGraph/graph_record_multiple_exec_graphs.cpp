@@ -39,15 +39,15 @@ int main() {
     run_kernels(testQueue, size, bufferA, bufferB, bufferC);
     testQueue.wait_and_throw();
 
-    testQueue.begin_recording(graph);
+    graph.begin_recording(testQueue);
 
     // Record commands to graph
     run_kernels(testQueue, size, bufferA, bufferB, bufferC);
 
-    testQueue.end_recording();
+    graph.end_recording();
 
-    // Execute several iterations of the graph (first iteration has already run
-    // before graph recording)
+    // Execute several iterations of the graph (first iteration has already
+    // run before graph recording)
     for (unsigned n = 1; n < iterations; n++) {
       auto graphExec = graph.finalize(testQueue.get_context());
       testQueue.submit([&](handler &cgh) { cgh.ext_oneapi_graph(graphExec); });

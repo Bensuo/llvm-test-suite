@@ -36,15 +36,16 @@ int main() {
     buffer<T> bufferB{dataB.data(), range<1>{dataB.size()}};
     buffer<T> bufferC{dataC.data(), range<1>{dataC.size()}};
 
-    testQueue.begin_recording(graph);
+    graph.begin_recording(testQueue);
 
     // Record commands to graph
     run_kernels(testQueue, size, bufferA, bufferB, bufferC);
 
-    testQueue.end_recording();
+    graph.end_recording();
     auto finalizeGraph = [&]() {
       auto graphExec = graph.finalize(testQueue.get_context());
-      testQueue.submit([&](sycl::handler &cgh) { cgh.ext_oneapi_graph(graphExec); });
+      testQueue.submit(
+          [&](sycl::handler &cgh) { cgh.ext_oneapi_graph(graphExec); });
     };
 
     std::vector<std::thread> threads;
