@@ -16,7 +16,7 @@ int main() {
   ext::oneapi::experimental::command_graph graph;
   {
     queue myQueue;
-    myQueue.begin_recording(graph);
+    graph.begin_recording(myQueue);
   }
 
   try {

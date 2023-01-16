@@ -30,7 +30,7 @@ int main() {
         graph;
     buffer<T> bufferIn{dataIn.data(), range<1>{dataIn.size()}};
 
-    testQueue.begin_recording(graph);
+    graph.begin_recording(testQueue);
 
     // Vector add to temporary output buffer
     testQueue.submit([&](handler &cgh) {
@@ -40,7 +40,7 @@ int main() {
         out << "Val: " << accIn[id.get_linear_id()] << sycl::endl;
       });
     });
-    testQueue.end_recording();
+    graph.end_recording();
 
     auto graphExec = graph.finalize(testQueue.get_context());
 

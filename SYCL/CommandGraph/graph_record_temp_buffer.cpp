@@ -41,7 +41,7 @@ int main() {
     buffer<T> bufferB{dataB.data(), range<1>{dataB.size()}};
     buffer<T> bufferC{dataC.data(), range<1>{dataC.size()}};
 
-    testQueue.begin_recording(graph);
+    graph.begin_recording(testQueue);
 
     // Create a temporary output buffer to use between kernels.
     {
@@ -64,7 +64,7 @@ int main() {
         cgh.parallel_for<temp_write>(
             range<1>(size), [=](item<1> id) { ptrOut[id] += ptrTemp[id] + 1; });
       });
-      testQueue.end_recording();
+      graph.end_recording();
     }
     auto graphExec = graph.finalize(testQueue.get_context());
 

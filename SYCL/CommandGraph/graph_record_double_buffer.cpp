@@ -47,17 +47,17 @@ int main() {
     buffer<T> bufferB2{dataB2.data(), range<1>{dataB2.size()}};
     buffer<T> bufferC2{dataC2.data(), range<1>{dataC2.size()}};
 
-    testQueue.begin_recording(graph);
+    graph.begin_recording(testQueue);
     run_kernels(testQueue, size, bufferA, bufferB, bufferC);
-    testQueue.end_recording();
+    graph.end_recording();
 
     auto execGraph = graph.finalize(testQueue.get_context());
 
     // Create second graph using other buffer set
     ext::oneapi::experimental::command_graph graphUpdate;
-    testQueue.begin_recording(graphUpdate);
+    graphUpdate.begin_recording(testQueue);
     run_kernels(testQueue, size, bufferA2, bufferB2, bufferC2);
-    testQueue.end_recording();
+    graphUpdate.end_recording();
 
     for (size_t i = 0; i < iterations; i++) {
       testQueue.submit([&](handler &cgh) { cgh.ext_oneapi_graph(graphExec); });

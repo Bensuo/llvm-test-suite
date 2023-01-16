@@ -34,9 +34,9 @@ int main() {
       queue myQueue;
 
       // Record commands to graph
-      myQueue.begin_recording(graph);
+      graph.begin_recording(myQueue);
       run_kernels(myQueue, size, bufferA, bufferB, bufferC);
-      myQueue.end_recording();
+      graph.end_recording();
     };
 
     std::vector<std::thread> threads;

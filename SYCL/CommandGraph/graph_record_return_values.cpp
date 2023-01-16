@@ -12,24 +12,24 @@ using namespace sycl;
 
 int main() {
   queue testQueue;
+  ext::oneapi::experimental::command_graph graph;
 
   bool failure = false;
 
-  bool changedState = testQueue.end_recording();
+  bool changedState = graph.end_recording();
   failure |= changedState;
 
-  ext::oneapi::experimental::command_graph graph;
-  changedState = testQueue.begin_recording(graph);
+  changedState = graph.begin_recording(testQueue);
   failure |= !changedState;
 
   // Recording to same graph is not an exception
-  changedState = testQueue.begin_recording(graph);
+  changedState = graph.begin_recording(testQueue);
   failure |= changedState;
 
-  changedState = testQueue.end_recording();
+  changedState = graph.end_recording();
   failure |= !changedState;
 
-  changedState = testQueue.end_recording();
+  changedState = graph.end_recording();
   failure |= changedState;
 
   return failure;

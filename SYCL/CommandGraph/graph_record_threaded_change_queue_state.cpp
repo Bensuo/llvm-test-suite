@@ -18,8 +18,8 @@ int main() {
   {
     auto recordGraph = [&]() {
       ext::oneapi::experimental::command_graph graph;
-      testQueue.begin_recording(graph);
-      testQueue.end_recording();
+      graph.begin_recording(testQueue);
+      graph.end_recording();
     };
 
     std::vector<std::thread> threads;

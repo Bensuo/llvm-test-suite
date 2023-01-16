@@ -49,7 +49,7 @@ int main() {
     auto ptrC = malloc_device<T>(dataC.size(), testQueue);
     testQueue.memcpy(ptrC, dataC.data(), dataC.size() * sizeof(T)).wait();
 
-    testQueue.begin_recording(graph);
+    graph.begin_recording(testQueue);
 
     // Record commands to graph
     // memcpy from B to A
@@ -76,7 +76,7 @@ int main() {
     // memcpy from B to C
     testQueue.copy(ptrB, ptrC, size);
 
-    testQueue.end_recording();
+    graph.end_recording();
     auto graphExec = graph.finalize(testQueue.get_context());
 
     // Execute graph over n iterations
