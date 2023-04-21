@@ -40,7 +40,7 @@ int main() {
   {
     ext::oneapi::experimental::command_graph<
         ext::oneapi::experimental::graph_state::modifiable>
-        graph;
+        graph{testQueue.get_context(), testQueue.get_device()};
     buffer<T> bufferA{dataA.data(), range<1>{dataA.size()}};
     buffer<T> bufferB{dataB.data(), range<1>{dataB.size()}};
     buffer<T> bufferC{dataC.data(), range<1>{dataC.size()}};
@@ -57,7 +57,7 @@ int main() {
           range<1>(size), [=](item<1> id) { ptrC[id] += ptrA[id] + ptrB[id]; });
     });
 
-    auto graphExec = graph.finalize(testQueue.get_context());
+    auto graphExec = graph.finalize();
 
     // Read and modify previous output and write to output buffer
     testQueue.submit([&](handler &cgh) {
@@ -69,7 +69,7 @@ int main() {
     graph.end_recording();
 
     // Finalize a graph with the additional kernel for writing out to
-    auto graphExecAdditional = graph.finalize(testQueue.get_context());
+    auto graphExecAdditional = graph.finalize();
 
     // Execute several iterations of the graph
     for (unsigned n = 0; n < iterations; n++) {

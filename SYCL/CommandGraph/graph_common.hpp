@@ -75,7 +75,7 @@ template <typename T>
 void run_kernels_usm(sycl::queue q, const size_t size, T *dataA, T *dataB,
                      T *dataC) {
   // Read & write Buffer A
-  q.submit([&](handler &cgh) {
+  auto eventA = q.submit([&](handler &cgh) {
     cgh.parallel_for<increment_kernel_usm>(range<1>(size), [=](item<1> id) {
       auto linID = id.get_linear_id();
       dataA[linID]++;
@@ -84,7 +84,8 @@ void run_kernels_usm(sycl::queue q, const size_t size, T *dataA, T *dataB,
 
   // Reads Buffer A
   // Read & Write Buffer B
-  q.submit([&](handler &cgh) {
+  auto eventB = q.submit([&](handler &cgh) {
+    cgh.depends_on(eventA);
     cgh.parallel_for<add_kernel_usm>(range<1>(size), [=](item<1> id) {
       auto linID = id.get_linear_id();
       dataB[linID] += dataA[linID];
@@ -93,7 +94,8 @@ void run_kernels_usm(sycl::queue q, const size_t size, T *dataA, T *dataB,
 
   // Reads Buffer A
   // Read & writes Buffer C
-  q.submit([&](handler &cgh) {
+  auto eventC = q.submit([&](handler &cgh) {
+    cgh.depends_on(eventA);
     cgh.parallel_for<subtract_kernel_usm>(range<1>(size), [=](item<1> id) {
       auto linID = id.get_linear_id();
       dataC[linID] -= dataA[linID];
@@ -102,6 +104,7 @@ void run_kernels_usm(sycl::queue q, const size_t size, T *dataA, T *dataB,
 
   // Read & write Buffers B and C
   q.submit([&](handler &cgh) {
+    cgh.depends_on({eventB, eventC});
     cgh.parallel_for<decrement_kernel_usm>(range<1>(size), [=](item<1> id) {
       auto linID = id.get_linear_id();
       dataB[linID]--;

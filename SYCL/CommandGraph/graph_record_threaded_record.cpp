@@ -25,7 +25,8 @@ int main() {
   std::iota(dataC.begin(), dataC.end(), 1000);
 
   {
-    ext::oneapi::experimental::command_graph graph;
+    ext::oneapi::experimental::command_graph graph{testQueue.get_context(),
+                                                   testQueue.get_device()};
     buffer<T> bufferA{dataA.data(), range<1>{dataA.size()}};
     buffer<T> bufferB{dataB.data(), range<1>{dataB.size()}};
     buffer<T> bufferC{dataC.data(), range<1>{dataC.size()}};

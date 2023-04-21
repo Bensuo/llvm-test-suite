@@ -15,11 +15,13 @@ int main() {
 
   bool success = false;
 
-  ext::oneapi::experimental::command_graph graphA;
+  ext::oneapi::experimental::command_graph graphA{testQueue.get_context(),
+                                                  testQueue.get_device()};
   graphA.begin_recording(testQueue);
 
   try {
-    ext::oneapi::experimental::command_graph graphB;
+    ext::oneapi::experimental::command_graph graphB{testQueue.get_context(),
+                                                    testQueue.get_device()};
     graphB.begin_recording(testQueue);
   } catch (sycl::exception &e) {
     auto stdErrc = e.code().value();

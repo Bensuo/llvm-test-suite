@@ -12,7 +12,8 @@ using namespace sycl;
 
 int main() {
   queue testQueue;
-  ext::oneapi::experimental::command_graph graph;
+  ext::oneapi::experimental::command_graph graph{testQueue.get_context(),
+                                                 testQueue.get_device()};
 
   bool failure = false;
 

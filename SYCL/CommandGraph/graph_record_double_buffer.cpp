@@ -38,7 +38,8 @@ int main() {
                            referenceC2);
 
   {
-    ext::oneapi::experimental::command_graph graph;
+    ext::oneapi::experimental::command_graph graph{testQueue.get_context(),
+                                                   testQueue.get_device()};
     buffer<T> bufferA{dataA.data(), range<1>{dataA.size()}};
     buffer<T> bufferB{dataB.data(), range<1>{dataB.size()}};
     buffer<T> bufferC{dataC.data(), range<1>{dataC.size()}};
@@ -51,10 +52,11 @@ int main() {
     run_kernels(testQueue, size, bufferA, bufferB, bufferC);
     graph.end_recording();
 
-    auto execGraph = graph.finalize(testQueue.get_context());
+    auto execGraph = graph.finalize();
 
     // Create second graph using other buffer set
-    ext::oneapi::experimental::command_graph graphUpdate;
+    ext::oneapi::experimental::command_graph graphUpdate{
+        testQueue.get_context(), testQueue.get_device()};
     graphUpdate.begin_recording(testQueue);
     run_kernels(testQueue, size, bufferA2, bufferB2, bufferC2);
     graphUpdate.end_recording();

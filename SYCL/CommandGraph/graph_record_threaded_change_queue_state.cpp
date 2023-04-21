@@ -17,7 +17,8 @@ int main() {
 
   {
     auto recordGraph = [&]() {
-      ext::oneapi::experimental::command_graph graph;
+      ext::oneapi::experimental::command_graph graph{testQueue.get_context(),
+                                                     testQueue.get_device()};
       graph.begin_recording(testQueue);
       graph.end_recording();
     };

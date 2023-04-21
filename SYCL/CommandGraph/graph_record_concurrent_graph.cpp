@@ -15,7 +15,8 @@ int main() {
 
   bool success = false;
 
-  ext::oneapi::experimental::command_graph graph;
+  ext::oneapi::experimental::command_graph graph{testQueue.get_context(),
+                                                 testQueue.get_device()};
   graph.begin_recording(testQueue);
 
   queue testQueue2;

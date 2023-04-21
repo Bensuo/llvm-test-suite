@@ -13,11 +13,12 @@ using namespace sycl;
 int main() {
   queue testQueue;
 
-  ext::oneapi::experimental::command_graph graph;
+  ext::oneapi::experimental::command_graph graph{testQueue.get_context(),
+                                                 testQueue.get_device()};
   graph.begin_recording(testQueue);
 
   try {
-    graph.finalize(testQueue.get_context());
+    graph.finalize();
   } catch (sycl::exception &e) {
     std::cout << "Exception thrown on finalize."
               << "\n";
