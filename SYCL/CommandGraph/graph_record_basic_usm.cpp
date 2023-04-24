@@ -30,7 +30,7 @@ int main() {
   {
     ext::oneapi::experimental::command_graph<
         ext::oneapi::experimental::graph_state::modifiable>
-        graph;
+        graph{testQueue.get_context(), testQueue.get_device()};
     auto ptrA = malloc_device<T>(dataA.size(), testQueue);
     testQueue.memcpy(ptrA, dataA.data(), dataA.size() * sizeof(T)).wait();
     auto ptrB = malloc_device<T>(dataB.size(), testQueue);
@@ -45,14 +45,14 @@ int main() {
     run_kernels_usm(testQueue, size, ptrA, ptrB, ptrC);
 
     graph.end_recording();
-    auto graphExec = graph.finalize(testQueue.get_context());
+    auto graphExec = graph.finalize();
 
     // Execute several iterations of the graph
     for (unsigned n = 0; n < iterations; n++) {
       testQueue.submit([&](handler &cgh) { cgh.ext_oneapi_graph(graphExec); });
     }
     // Perform a wait on all graph submissions.
-    testQueue.wait();
+    testQueue.wait_and_throw();
 
     testQueue.memcpy(dataA.data(), ptrA, dataA.size() * sizeof(T)).wait();
     testQueue.memcpy(dataB.data(), ptrB, dataB.size() * sizeof(T)).wait();

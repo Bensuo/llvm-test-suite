@@ -27,7 +27,7 @@ int main() {
 
     ext::oneapi::experimental::command_graph<
         ext::oneapi::experimental::graph_state::modifiable>
-        graph;
+        graph{testQueue.get_context(), testQueue.get_device()};
     buffer<T> bufferIn{dataIn.data(), range<1>{dataIn.size()}};
 
     graph.begin_recording(testQueue);
@@ -42,7 +42,7 @@ int main() {
     });
     graph.end_recording();
 
-    auto graphExec = graph.finalize(testQueue.get_context());
+    auto graphExec = graph.finalize();
 
     testQueue.submit([&](handler &cgh) { cgh.ext_oneapi_graph(graphExec); });
 

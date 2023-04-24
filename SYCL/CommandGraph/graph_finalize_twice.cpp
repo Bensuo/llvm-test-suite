@@ -14,9 +14,9 @@ int main() {
 
   ext::oneapi::experimental::command_graph<
       ext::oneapi::experimental::graph_state::modifiable>
-      graph;
-  auto graphExec = graph.finalize(testQueue.get_context());
-  auto graphExec2 = graph.finalize(testQueue.get_context());
+      graph{testQueue.get_context(), testQueue.get_device()};
+  auto graphExec = graph.finalize();
+  auto graphExec2 = graph.finalize();
 
   return 0;
 }

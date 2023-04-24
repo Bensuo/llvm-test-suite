@@ -30,7 +30,7 @@ int main() {
   {
     ext::oneapi::experimental::command_graph<
         ext::oneapi::experimental::graph_state::modifiable>
-        graph;
+        graph{testQueue.get_context(), testQueue.get_device()};
     buffer<T> bufferA{dataA.data(), range<1>{dataA.size()}};
     buffer<T> bufferB{dataB.data(), range<1>{dataB.size()}};
     buffer<T> bufferC{dataC.data(), range<1>{dataC.size()}};
@@ -49,7 +49,7 @@ int main() {
     // Execute several iterations of the graph (first iteration has already
     // run before graph recording)
     for (unsigned n = 1; n < iterations; n++) {
-      auto graphExec = graph.finalize(testQueue.get_context());
+      auto graphExec = graph.finalize();
       testQueue.submit([&](handler &cgh) { cgh.ext_oneapi_graph(graphExec); });
     }
     // Perform a wait on all graph submissions.

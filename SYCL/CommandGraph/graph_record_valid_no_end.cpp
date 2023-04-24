@@ -13,14 +13,15 @@ using namespace sycl;
 int main() {
   queue testQueue;
 
-  ext::oneapi::experimental::command_graph graph;
+  ext::oneapi::experimental::command_graph graph{testQueue.get_context(),
+                                                 testQueue.get_device()};
   {
     queue myQueue;
     graph.begin_recording(myQueue);
   }
 
   try {
-    auto graphExec = graph.finalize(testQueue.get_context());
+    auto graphExec = graph.finalize();
     testQueue.submit([&](handler &cgh) { cgh.ext_oneapi_graph(graphExec); });
   } catch (sycl::exception &e) {
     std::cout << "Exception thrown on finalize or submission.\n";

@@ -39,7 +39,7 @@ int main() {
 
   ext::oneapi::experimental::command_graph<
       ext::oneapi::experimental::graph_state::modifiable>
-      graph;
+      graph{testQueue.get_context(), testQueue.get_device()};
 
   {
     auto ptrA = malloc_device<T>(dataA.size(), testQueue);
@@ -77,7 +77,7 @@ int main() {
     testQueue.copy(ptrB, ptrC, size);
 
     graph.end_recording();
-    auto graphExec = graph.finalize(testQueue.get_context());
+    auto graphExec = graph.finalize();
 
     // Execute graph over n iterations
     for (unsigned n = 0; n < iterations; n++) {

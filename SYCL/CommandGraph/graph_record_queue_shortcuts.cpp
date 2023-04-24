@@ -28,7 +28,7 @@ int main() {
   {
     ext::oneapi::experimental::command_graph<
         ext::oneapi::experimental::graph_state::modifiable>
-        graph;
+        graph{testQueue.get_context(), testQueue.get_device()};
     buffer<T> bufferA{dataA.data(), range<1>{dataA.size()}};
     buffer<T> bufferB{dataB.data(), range<1>{dataB.size()}};
     buffer<T> bufferC{dataC.data(), range<1>{dataC.size()}};
@@ -40,7 +40,7 @@ int main() {
     run_kernels(testQueue, size, bufferA, bufferB, bufferC);
 
     graph.end_recording();
-    auto graphExec = graph.finalize(testQueue.get_context());
+    auto graphExec = graph.finalize();
 
     // Execute several iterations of the graph using the different shortcuts
     event e = testQueue.ext_oneapi_graph(graphExec);

@@ -29,7 +29,8 @@ int main() {
   auto dataC2 = dataC;
 
   {
-    ext::oneapi::experimental::command_graph graphA;
+    ext::oneapi::experimental::command_graph graphA{testQueue.get_context(),
+                                                    testQueue.get_device()};
     buffer<T> bufferA{dataA.data(), range<1>{dataA.size()}};
     buffer<T> bufferB{dataB.data(), range<1>{dataB.size()}};
     buffer<T> bufferC{dataC.data(), range<1>{dataC.size()}};
@@ -41,9 +42,10 @@ int main() {
 
     graphA.end_recording();
 
-    auto graphExec = graphA.finalize(testQueue.get_context());
+    auto graphExec = graphA.finalize();
 
-    ext::oneapi::experimental::command_graph graphB;
+    ext::oneapi::experimental::command_graph graphB{testQueue.get_context(),
+                                                    testQueue.get_device()};
 
     buffer<T> bufferA2{dataA2.data(), range<1>{dataA2.size()}};
     buffer<T> bufferB2{dataB2.data(), range<1>{dataB2.size()}};

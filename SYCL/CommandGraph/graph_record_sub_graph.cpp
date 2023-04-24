@@ -48,7 +48,7 @@ int main() {
   {
     ext::oneapi::experimental::command_graph<
         ext::oneapi::experimental::graph_state::modifiable>
-        subGraph;
+        subGraph{testQueue.get_context(), testQueue.get_device()};
     buffer<T> bufferA{dataA.data(), range<1>{dataA.size()}};
     buffer<T> bufferB{dataB.data(), range<1>{dataB.size()}};
     buffer<T> bufferC{dataC.data(), range<1>{dataC.size()}};
@@ -76,9 +76,10 @@ int main() {
 
     subGraph.end_recording();
 
-    auto subGraphExec = subGraph.finalize(testQueue.get_context());
+    auto subGraphExec = subGraph.finalize();
 
-    ext::oneapi::experimental::command_graph mainGraph;
+    ext::oneapi::experimental::command_graph mainGraph{testQueue.get_context(),
+                                                       testQueue.get_device()};
 
     mainGraph.begin_recording(testQueue);
 
@@ -106,7 +107,7 @@ int main() {
     mainGraph.end_recording();
 
     // Finalize a graph with the additional kernel for writing out to
-    auto mainGraphExec = mainGraph.finalize(testQueue.get_context());
+    auto mainGraphExec = mainGraph.finalize();
 
     // Execute several iterations of the graph
     for (unsigned n = 0; n < iterations; n++) {
